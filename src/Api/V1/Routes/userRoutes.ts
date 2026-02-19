@@ -1,9 +1,16 @@
 import { Router } from "express";
 import UserController from "../Controllers/UserController";
+import { requireAuth, requireScope } from "../../../Middleware/authMiddleware";
 
 const router = Router();
 const userController = new UserController();
 
-router.get("/index", userController.index.bind(userController));
+// ✅ Protected: caller must supply a valid Bearer token with "read" scope
+router.get(
+  "/index",
+  requireAuth,
+  requireScope("read"),
+  userController.index.bind(userController),
+);
 
 export default router;
